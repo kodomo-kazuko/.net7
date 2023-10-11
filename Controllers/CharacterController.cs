@@ -10,22 +10,30 @@ namespace game.Controllers
     [Route("api/[controller]")]
     public class CharacterController : ControllerBase
     {
-        private static List<Character> Characters = new List<Character> 
+
+        private readonly ICharacterService _characterService;
+
+        public CharacterController(ICharacterService characterService)
         {
-            new Character(),
-            new Character {id = 1, name = "red" }   
-        };
+            _characterService = characterService;
+        }
 
         [HttpGet("GetAll")]
-        public ActionResult<List<Character>> Get() 
+        public async Task<ActionResult<List<Character>>> Get() 
         {
-            return Ok(Characters);
+            return Ok(await _characterService.GetAllCharacters());
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Character> GetSingle(int id) 
+        public async Task<ActionResult<Character>> GetSingle(int id) 
         {
-            return Ok(Characters.FirstOrDefault(c => c.id == id));
+            return Ok(await _characterService.GetCharacterById(id));
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<List<Character>>> AddCharacter(Character newCharacter) 
+        {
+            return Ok(await _characterService.AddCharacter(newCharacter));
         }
     }
 }

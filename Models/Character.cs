@@ -1,3 +1,4 @@
+
 namespace game
 {
     public class Character
@@ -9,5 +10,10 @@ namespace game
         public int defence { get; set; } = 10;
         public int brains { get; set; } = 10;
         public RpgClass Class { get; set; } = RpgClass.Tank;
+
+        public static implicit operator Character(List<Character> v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
