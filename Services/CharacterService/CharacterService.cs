@@ -31,6 +31,28 @@ namespace game.Services.CharacterService
             return serviceResponse; 
         }
 
+        public async Task<ServiceResponse<List<GetCharacterDto>>> DeleteCharacter(int id)
+        {
+            var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
+            try 
+            {
+                var character = Characters.First(c => c.id == id); 
+                if (character is null)
+                    throw new Exception($"Character With The Id '{id}' not found");
+
+                Characters.Remove(character);
+
+                serviceResponse.Data = Characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
+            }
+            catch (Exception ex) 
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = ex.Message;
+            }
+
+            return serviceResponse;
+        }
+
         public async Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacters()
         {
             var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
@@ -52,7 +74,8 @@ namespace game.Services.CharacterService
             try 
             {
                 var character = Characters.FirstOrDefault(c => c.id == updatedCharacter.id); 
-
+                if (character is null)
+                    throw new Exception($"Character With The Id '{updatedCharacter.id}' not found");
                 character.name = updatedCharacter.name;
                 character.brains = updatedCharacter.defence;
                 character.defence = updatedCharacter.defence;
