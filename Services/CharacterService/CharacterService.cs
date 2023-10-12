@@ -15,10 +15,12 @@ namespace game.Services.CharacterService
             new Character {id = 1, name = "red" }
         };
         private readonly IMapper _mapper;
+        private readonly DataContext _context;
 
-        public CharacterService(IMapper mapper)
+        public CharacterService(IMapper mapper, DataContext context)
         {
             _mapper = mapper;
+            _context = context; 
         }
         public async Task<ServiceResponse<List<GetCharacterDto>>> AddCharacter(AddCharacterDto newCharacter)
         {
@@ -26,45 +28,56 @@ namespace game.Services.CharacterService
             var character = _mapper.Map<Character>(newCharacter);
             character.id = Characters.Max(c => c.id) + 1;
             Characters.Add(character);
-            Characters.Add(_mapper.Map<Character>(newCharacter));
             serviceResponse.Data = Characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
+            try
+            {
+                _context.Characters.Add(character);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = ex.Message;
+            }
             return serviceResponse; 
         }
+
 
         public async Task<ServiceResponse<List<GetCharacterDto>>> DeleteCharacter(int id)
         {
             var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
             try 
             {
-                var character = Characters.First(c => c.id == id); 
+                var character = await _context.Characters.FirstOrDefaultAsync(c => c.id == id); 
                 if (character is null)
-                    throw new Exception($"Character With The Id '{id}' not found");
+                    throw new Exception($"Character with the ID '{id}' not found");
 
-                Characters.Remove(character);
+                _context.Characters.Remove(character);
+                await _context.SaveChangesAsync();
 
-                serviceResponse.Data = Characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
+                serviceResponse.Data = await _context.Characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToListAsync();
             }
             catch (Exception ex) 
             {
                 serviceResponse.Success = false;
                 serviceResponse.Message = ex.Message;
             }
-
-            return serviceResponse;
+            return serviceResponse; 
         }
 
         public async Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacters()
         {
             var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
-            serviceResponse.Data = Characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
+            var dbCharacters = await _context.Characters.ToListAsync();
+            serviceResponse.Data = dbCharacters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
             return serviceResponse;
         }
 
         public async Task<ServiceResponse<GetCharacterDto>> GetCharacterById(int id)
         {
             var serviceResponse = new ServiceResponse<GetCharacterDto>();
-            var character = Characters.FirstOrDefault(c => c.id == id);
-            serviceResponse.Data = _mapper.Map<GetCharacterDto>(character);
+            var dbCharacters = await _context.Characters.FirstOrDefaultAsync(c => c.id == id);
+            serviceResponse.Data = _mapper.Map<GetCharacterDto>(dbCharacters);
             return serviceResponse;
         }
 
@@ -73,7 +86,7 @@ namespace game.Services.CharacterService
             var serviceResponse = new ServiceResponse<GetCharacterDto>();
             try 
             {
-                var character = Characters.FirstOrDefault(c => c.id == updatedCharacter.id); 
+                var character = await _context.Characters.FirstOrDefaultAsync(c => c.id == updatedCharacter.id); 
                 if (character is null)
                     throw new Exception($"Character With The Id '{updatedCharacter.id}' not found");
                 character.name = updatedCharacter.name;
