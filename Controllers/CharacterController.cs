@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using game.Dto.Character;
 using Microsoft.AspNetCore.Mvc;
 
 namespace game.Controllers
@@ -19,19 +20,19 @@ namespace game.Controllers
         }
 
         [HttpGet("GetAll")]
-        public async Task<ActionResult<List<Character>>> Get() 
+        public async Task<ActionResult<List<GetCharacterDto>>> Get() 
         {
             return Ok(await _characterService.GetAllCharacters());
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Character>> GetSingle(int id) 
+        public async Task<ActionResult<GetCharacterDto>> GetSingle(int id) 
         {
             return Ok(await _characterService.GetCharacterById(id));
         }
 
         [HttpPost]
-        public async Task<ActionResult<List<Character>>> AddCharacter(Character newCharacter) 
+        public async Task<ActionResult<List<GetCharacterDto>>> AddCharacter(AddCharacterDto newCharacter) 
         {
             return Ok(await _characterService.AddCharacter(newCharacter));
         }

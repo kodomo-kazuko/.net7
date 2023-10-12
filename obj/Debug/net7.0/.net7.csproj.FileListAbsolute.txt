@@ -31,3 +31,5 @@ D:\Github\.net7\obj\Debug\net7.0\refint\.net7.dll
 D:\Github\.net7\obj\Debug\net7.0\.net7.pdb
 D:\Github\.net7\obj\Debug\net7.0\.net7.genruntimeconfig.cache
 D:\Github\.net7\obj\Debug\net7.0\ref\.net7.dll
+D:\Github\.net7\bin\Debug\net7.0\AutoMapper.dll
+D:\Github\.net7\bin\Debug\net7.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll

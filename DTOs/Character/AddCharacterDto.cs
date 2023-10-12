@@ -1,9 +1,7 @@
+namespace game.Dto.Character;
 
-namespace game.Models.Character
-{
-    public class Character
+    public class AddCharacterDto
     {
-        public int id { get; set; }
         public string name { get; set; } = "kazuko";
         public int hitPoint { get; set; } = 100;
         public int strength { get; set; } = 10;
@@ -11,4 +9,3 @@ namespace game.Models.Character
         public int brains { get; set; } = 10;
         public RpgClass Class { get; set; } = RpgClass.Tank;
     }
-}
