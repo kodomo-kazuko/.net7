@@ -36,5 +36,12 @@ namespace game.Controllers
         {
             return Ok(await _characterService.AddCharacter(newCharacter));
         }
+
+
+        [HttpPut]
+        public async Task<ActionResult<List<GetCharacterDto>>> UpdateCharacter(UpdateCharacterDto updateCharacter) 
+        {
+            return Ok(await _characterService.UpdateCharacter(updateCharacter));
+        }
     }
 }
