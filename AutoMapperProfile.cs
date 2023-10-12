@@ -8,6 +8,7 @@ namespace game
         public AutoMapperProfile()
         {
             CreateMap<Character, GetCharacterDto>();
+            CreateMap<AddCharacterDto, Character>();
         }
     }
 }
