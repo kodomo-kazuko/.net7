@@ -49,16 +49,24 @@ namespace game.Services.CharacterService
         public async Task<ServiceResponse<GetCharacterDto>> UpdateCharacter(UpdateCharacterDto updatedCharacter)
         {
             var serviceResponse = new ServiceResponse<GetCharacterDto>();
-            var character = Characters.FirstOrDefault(c => c.id == updatedCharacter.id); 
+            try 
+            {
+                var character = Characters.FirstOrDefault(c => c.id == updatedCharacter.id); 
 
-            character.name = updatedCharacter.name;
-            character.brains = updatedCharacter.defence;
-            character.defence = updatedCharacter.defence;
-            character.hitPoint = updatedCharacter.hitPoint;
-            character.strength = updatedCharacter.strength;
-            character.Class = updatedCharacter.Class;
+                character.name = updatedCharacter.name;
+                character.brains = updatedCharacter.defence;
+                character.defence = updatedCharacter.defence;
+                character.hitPoint = updatedCharacter.hitPoint;
+                character.strength = updatedCharacter.strength;
+                character.Class = updatedCharacter.Class;
 
-            serviceResponse.Data = _mapper.Map<GetCharacterDto>(character);
+                serviceResponse.Data = _mapper.Map<GetCharacterDto>(character);
+            }
+            catch (Exception ex) 
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = ex.Message;
+            }
 
             return serviceResponse;
         }
